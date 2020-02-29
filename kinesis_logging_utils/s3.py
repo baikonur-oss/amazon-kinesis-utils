@@ -24,16 +24,7 @@ def put_str_data(client, bucket: str, key: str, data: str, gzip_compress: bool =
     else:
         data_p = data
 
-    try:
-        with io.BytesIO(data_p) as fileobj:
-            s3_results = client.upload_fileobj(fileobj, bucket, key)
+    with io.BytesIO(data_p) as fileobj:
+        s3_results = client.upload_fileobj(fileobj, bucket, key)
 
-        logger.info(f"S3 upload errors: {s3_results}")
-
-    except S3UploadFailedError as e:
-        logger.error("Upload failed. Error:")
-        logger.error(e)
-        import traceback
-
-        traceback.print_stack()
-        raise
+    logger.info(f"S3 upload errors: {s3_results}")

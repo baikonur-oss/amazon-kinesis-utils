@@ -6,28 +6,32 @@ import random
 import string
 import time
 from json import JSONDecodeError
-from typing import List
+from typing import List, Generator
 
 from aws_kinesis_agg.deaggregator import iter_deaggregate_records
 
-from kinesis_logging_utils.misc import split_list
+from .misc import split_list
 
 logger = logging.getLogger("kinesis_logging_utils")
 logger.setLevel(logging.INFO)
 
 
 class KinesisException(Exception):
+    """
+    A custom exception returned on put_records_batch failures. Intentionally not catching this exception in Lambda
+    Functions (source mapped to a Kinesis Data Stream) will make Lambda rerun until all record are successfully sent.
+    """
+
     pass
 
 
-def normalize_payload_json(payload: dict) -> List[dict]:
+def normalize_cloudwatch_messages(payload: str) -> List[str]:
     """
-    Normalize messages from CloudWatch (subscription filters) and pass through other data
-    Warning: non-JSON data is ignored
+    Normalize messages from CloudWatch Logs subscription filters and pass through other data
     
     :param payload: A string containing JSON data (decoded payload inside Kinesis records)
-    :return: List of normalized raw data (CloudWatch Logs subscription filters may send multiple
-    log events in one payload)
+    :return: List of normalized raw data
+             (CloudWatch Logs subscription filters may send multiple log events in one payload)
     """
     # Normalize messages from CloudWatch (subscription filters) and pass through anything else
     # https://docs.aws.amazon.com/ja_jp/AmazonCloudWatch/latest/logs/SubscriptionFilters.html
@@ -40,86 +44,67 @@ def normalize_payload_json(payload: dict) -> List[dict]:
 
     # check if data is JSON and parse
     try:
-        payload = json.loads(payload)
+        payload_json = json.loads(payload)
         if type(payload) is not dict:
             logger.error(f"Top-level JSON data is not an object, giving up: {payload}")
             return []
 
     except JSONDecodeError:
-        logger.error(f"Non-JSON data found: {payload}, giving up")
-        return []
+        return [payload]
 
-    if "messageType" not in payload:
+    if "messageType" not in payload_json:
         return [payload]
 
     # messageType is present in payload, must be coming from CloudWatch
     logger.debug(
-        f"Got payload looking like CloudWatch Logs via subscription filters: {payload}"
+        f"Got payload looking like CloudWatch Logs via subscription filters: {payload_json}"
     )
 
-    return extract_json_data_from_cwl_message(payload)
+    return extract_data_from_json_cwl_message(payload_json)
 
 
-def extract_json_data_from_cwl_message(payload: dict) -> List[dict]:
+def extract_data_from_json_cwl_message(message: dict) -> List[str]:
     """
-    Extract json log events from raw Kinesis records containing messages from CloudWatch Logs via subscription filters.
-    Warning: ignores any non-JSON data
+    Extract log events from CloudWatch Logs subscription filters JSON messages (parsed to dict).
+    For details, see: https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/SubscriptionFilters.html 
 
-    :param payload:
-    :return:
+    :param message: Dictionary representing CloudWatch Logs subscription filters JSON messages
+    :return: List of raw log event messages
     """
-    # see: https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/SubscriptionFilters.html
-    if payload["messageType"] == "CONTROL_MESSAGE":
-        logger.info(f"Got CONTROL_MESSAGE from CloudWatch: {payload}, skipping")
+    if message["messageType"] == "CONTROL_MESSAGE":
+        logger.info(f"Got CONTROL_MESSAGE from CloudWatch: {message}, skipping")
         return []
 
-    elif payload["messageType"] == "DATA_MESSAGE":
-        payloads = []
+    elif message["messageType"] == "DATA_MESSAGE":
+        data = []
 
-        if "logEvents" not in payload:
+        if "logEvents" not in message:
             logger.error(
                 f"Got DATA_MESSAGE from CloudWatch Logs but logEvents are not present, "
-                f"skipping payload: {payload}"
+                f"skipping payload: {message}"
             )
             return []
 
-        events = payload["logEvents"]
+        events = message["logEvents"]
 
         for event in events:
-            # check if data is JSON and parse
-            try:
-                logger.debug(f"message: {event['message']}")
-                payload_parsed = json.loads(event["message"])
-                logger.debug(f"parsed payload: {payload_parsed}")
+            message = event["message"]
+            logger.debug(f"message: {message}")
 
-                if type(payload_parsed) is not dict:
-                    logger.error(
-                        f"Top-level JSON data in CloudWatch Logs payload is not an object, skipping: "
-                        f"{payload_parsed}"
-                    )
-                    continue
+            data.append(message)
 
-            except JSONDecodeError as e:
-                logger.debug(e)
-                logger.debug(
-                    f"Non-JSON data found inside CloudWatch Logs message: {event}, skipping"
-                )
-                continue
-
-            payloads.append(payload_parsed)
-
-        return payloads
+        return data
 
     else:
-        logger.error(f"Got unknown messageType: {payload['messageType']} , skipping")
+        logger.error(f"Got unknown messageType: {message['messageType']} , skipping")
         return []
 
 
-def create_json_records(data_list: list) -> List[dict]:
+def create_records(data: List[str]) -> List[dict]:
     """
     Create Kinesis Records for use with PutRecords API
 
-    :param data_list: List of data to convert
+    :param data: List of strings to convert to records
     :return: List of Kinesis Records for PutRecords API
     """
     random_alphanumerical = (
@@ -127,39 +112,37 @@ def create_json_records(data_list: list) -> List[dict]:
     )
 
     records = []
-    record: str
-    for record in data_list:
-        data_blob = json.dumps(record).encode("utf-8")
+    d: str
+    for d in data:
+        data_blob = d.encode("utf-8")
         partition_key: str = "".join(
             random.choices(random_alphanumerical, k=20)
         )  # max 256 chars
-        records.append(
-            {"Data": data_blob, "PartitionKey": partition_key,}
-        )
+        records.append({"Data": data_blob, "PartitionKey": partition_key})
     logger.debug(f"Formed Kinesis Records batch for PutRecords API: {records}")
     return records
 
 
-def put_batch_json(
-    client, stream_name: str, records: list, max_retries: int
+def put_records_batch(
+    client, stream_name: str, records: list, max_retries: int, max_batch_size: int = 500
 ) -> None or List[dict]:
     """
-    Put multiple records to Kinesis Data Streams using PutRecords API.
+    Put multiple records to Kinesis Data Streams using PutRecords API in batches.
 
     :param client: Kinesis API client (e.g. boto3.client('kinesis') )
     :param stream_name: Kinesis Data Streams stream name
     :param records: list of records to send. Records will be dumped with json.dumps
     :param max_retries: Maximum retries for resending failed records
-    :return: Records failed to put in Kinesis Data Stream after all retries
+    :param max_batch_size: Maximum number of records sent in a single PutRecords API call.
+    :return: Records failed to put in Kinesis Data Stream after all retries. Each PutRecords API call can receive up
+             to 500 records:
+             https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/kinesis.html#Kinesis.Client.put_records
     """
 
     retry_list = []
 
-    # Each PutRecords API request can support up to 500 records:
-    # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/kinesis.html#Kinesis.Client.put_records
-
-    for batch_index, batch in enumerate(split_list(records, 500)):
-        records_to_send = create_json_records(batch)
+    for batch_index, batch in enumerate(split_list(records, max_batch_size)):
+        records_to_send = create_records(batch)
         retries_left = max_retries
 
         while len(records_to_send) > 0:
@@ -199,9 +182,9 @@ def put_batch_json(
     return None
 
 
-def parse_json_logs(raw_records: list) -> dict:
+def parse_records(raw_records: list) -> Generator[str, None, None]:
     """
-    Generator that de-aggregates, decodes, decompresses Kinesis Records and parses them as JSON.
+    Generator that de-aggregates, decodes, gzip decompresses Kinesis Records
 
     :param raw_records: Raw Kinesis records (usually event['Records'] in Lambda handler function)
     :return:
@@ -218,7 +201,7 @@ def parse_json_logs(raw_records: list) -> dict:
             raw_data = gzip.decompress(raw_data)
 
         data = raw_data.decode()
-        payloads = normalize_payload_json(data)
+        payloads = normalize_cloudwatch_messages(data)
         logger.debug(f"Normalized payloads: {payloads}")
 
         for payload in payloads:

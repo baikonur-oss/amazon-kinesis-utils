@@ -9,19 +9,19 @@ requirements = [
 ]
 
 setup(
-    name="kinesis_logging_utils",
-    version="0.1.1",
+    name="amazon_kinesis_utils",
+    version="0.1.2",
     license="MIT",
     author="Tamirlan Torgayev",
     author_email="torgayev@me.com",
-    description="Baikonur Kinesis Logging utilities for Python Lambdas",
+    description="amazon-kinesis-utils: a library of useful utilities for Amazon Kinesis",
     long_description=long_description,
     long_description_content_type="text/markdown",
     install_requires=requirements,
     zip_safe=True,
-    url="https://github.com/baikonur-oss/kinesis-logging-utils",
+    url="https://amazon-kinesis-utils.readthedocs.io/en/latest/",
     project_urls={
-        "Source Code": "https://github.com/baikonur-oss/kinesis-logging-utils",
+        "Source Code": "https://github.com/baikonur-oss/amazon-kinesis-utils",
     },
     packages=find_packages(exclude=("test",)),
     classifiers=[
