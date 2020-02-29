@@ -1,5 +1,5 @@
 # amazon-kinesis-utils
-amazon-kinesis-utils: a library of useful utilities for Amazon Kinesis
+A library of useful utilities for Amazon Kinesis
 
 [![PyPi version](https://img.shields.io/pypi/v/amazon-kinesis-utils.svg)](https://pypi.python.org/pypi/amazon-kinesis-utils/) 
 [![Documentation Status](https://readthedocs.org/projects/kinesis-logging-utils/badge/?version=latest)](https://kinesis-logging-utils.readthedocs.io/en/latest/?badge=latest)
