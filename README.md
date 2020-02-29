@@ -1,35 +1,30 @@
-# kinesis-logging-utils
-Baikonur Kinesis Logging utilities for Python Lambdas
+# amazon-kinesis-utils
+amazon-kinesis-utils: a library of useful utilities for Amazon Kinesis
 
+[![PyPi version](https://img.shields.io/pypi/v/amazon-kinesis-utils.svg)](https://pypi.python.org/pypi/amazon-kinesis-utils/) 
+[![Documentation Status](https://readthedocs.org/projects/kinesis-logging-utils/badge/?version=latest)](https://kinesis-logging-utils.readthedocs.io/en/latest/?badge=latest)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![PyPi version](https://img.shields.io/pypi/v/kinesis-logging-utils.svg)](https://pypi.python.org/pypi/kinesis-logging-utils/) 
 ![](https://img.shields.io/badge/python-3.6+-blue.svg) 
 ![t](https://img.shields.io/badge/status-beta-orange.svg) 
 
-## Module structure
-- `kinesis`: Utilities to work with Kinesis Aggregated records, JSON events coming from CloudWatch Logs with 
-subscription filters, gzipped JSON data and more.
-- `s3`: Utilities to save string data to S3 easily.
-- `baikonur_logging`: Utilities specific to Baikonur Kinesis/Lambda logging modules 
-- `misc`: Various utilities useful when working with Kinesis Data Streams 
+
+## Reference
+See: https://amazon-kinesis-utils.readthedocs.io/en/latest/
 
 ## Usage
 ```python
 # import submodule you want to use with from import
-from kinesis_logging_utils import kinesis
+from amazon_kinesis_utils import kinesis
 
 def lambda_handler(event, context):
     raw_records = event['Records']
     
-    # kinesis.parse_json_logs parses aggregated/non-aggregated records, with or without gzip compression
-    # non-JSON data is automatically rejected
-    for payload in kinesis.parse_json_logs(raw_records):
-        # kinesis.parse_json_logs is a generator, so we only have one payload in memory on every iteration
+    # kinesis.parse_records parses aggregated/non-aggregated records, with or without gzip compression
+    # it even unpacks CloudWatch Logs subscription filters messages
+    for payload in kinesis.parse_records(raw_records):
+        # kinesis.parse_records is a generator, so we only have one payload in memory on every iteration
         print(f"Decoded payload: {payload}")
 ```
-
-## Reference
-See: https://kinesis-logging-utils.readthedocs.io/en/latest/
 
 ## Contributing
 
@@ -45,5 +40,5 @@ $ brew install pre-commit
 $ pre-commit install
 
 # install sphinx
-$ pip install sphinx
+$ pip install sphinx sphinx_rtd_theme
 ```

@@ -1,12 +1,11 @@
-# Baikonur Kinesis/Lambda Logging specific methods
 import datetime
 import logging
 import uuid
-from typing import Any
 
 import dateutil.parser
 
-from kinesis_logging_utils import s3
+from . import s3
+from .misc import dict_get_default
 
 logger = logging.getLogger("kinesis_logging_utils")
 
@@ -108,27 +107,3 @@ def append_to_log_dict(
         }
 
     dictionary[log_type]["records"].append(log_data)
-
-
-def dict_get_default(
-    dictionary: dict, key: str, default: any, verbose: bool = False
-) -> Any:
-    """
-    Get key from dictionary if key is in dictionary, default value otherwise
-
-    :param dictionary: dictionary to retrieve key from
-    :param key: key name in dictionary
-    :param default: value to return if key is not in dictionary
-    :param verbose: output detailed warning message when returning default value
-    :return: value for key if key is in dictionary, default value otherwise
-    """
-    if key not in dictionary:
-        if verbose:
-            logger.warning(
-                f'Cannot retrieve field "{key}" from data: {dictionary}, '
-                f"falling back to default value: {default}"
-            )
-        return default, True
-
-    else:
-        return dictionary[key], False
