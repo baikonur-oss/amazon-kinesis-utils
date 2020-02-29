@@ -2,8 +2,6 @@ import gzip
 import io
 import logging
 
-from boto3.exceptions import S3UploadFailedError
-
 logger = logging.getLogger("kinesis_logging_utils")
 logger.setLevel(logging.INFO)
 
