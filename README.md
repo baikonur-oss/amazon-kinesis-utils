@@ -2,7 +2,7 @@
 A library of useful utilities for Amazon Kinesis
 
 [![PyPi version](https://img.shields.io/pypi/v/amazon-kinesis-utils.svg)](https://pypi.python.org/pypi/amazon-kinesis-utils/) 
-[![Documentation Status](https://readthedocs.org/projects/kinesis-logging-utils/badge/?version=latest)](https://kinesis-logging-utils.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/amazon-kinesis-utils/badge/?version=latest)](https://amazon-kinesis-utils.readthedocs.io/en/latest/?badge=latest)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 ![](https://img.shields.io/badge/python-3.6+-blue.svg) 
 ![t](https://img.shields.io/badge/status-beta-orange.svg) 
