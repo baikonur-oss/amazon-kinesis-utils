@@ -9,4 +9,4 @@ def split_list(lst: list, n: int) -> List[list]:
     :param n: Size of chunk (last chunk may be less than n)
     """
     for i in range(0, len(lst), n):
-        yield lst[i:i + n]
+        yield lst[i : i + n]
