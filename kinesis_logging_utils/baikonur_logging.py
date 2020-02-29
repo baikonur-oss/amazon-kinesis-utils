@@ -6,7 +6,7 @@ from typing import Any
 
 import dateutil.parser
 
-from . import s3
+from kinesis_logging_utils import s3
 
 logger = logging.getLogger("kinesis_logging_utils")
 

@@ -10,7 +10,7 @@ from typing import List
 
 from aws_kinesis_agg.deaggregator import iter_deaggregate_records
 
-from .misc import split_list
+from kinesis_logging_utils.misc import split_list
 
 logger = logging.getLogger("kinesis_logging_utils")
 logger.setLevel(logging.INFO)

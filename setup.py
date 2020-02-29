@@ -4,14 +4,13 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 requirements = [
-    "boto3",
     "python-dateutil",
     "aws_kinesis_agg",
 ]
 
 setup(
     name="kinesis_logging_utils",
-    version="0.1.0",
+    version="0.1.1",
     license="MIT",
     author="Tamirlan Torgayev",
     author_email="torgayev@me.com",
