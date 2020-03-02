@@ -10,7 +10,7 @@ requirements = [
 
 setup(
     name="amazon_kinesis_utils",
-    version="0.1.4",
+    version="0.1.5",
     license="MIT",
     author="Tamirlan Torgayev",
     author_email="torgayev@me.com",
