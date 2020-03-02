@@ -1,11 +1,10 @@
 import base64
 import gzip
-import json
 import logging
 import random
 import string
 import time
-from json import JSONDecodeError
+from json import JSONDecodeError, loads
 from typing import List, Generator
 
 from aws_kinesis_agg.deaggregator import iter_deaggregate_records
@@ -44,7 +43,7 @@ def normalize_cloudwatch_messages(payload: str) -> List[str]:
 
     # check if data is JSON and parse
     try:
-        payload_json = json.loads(payload)
+        payload_json = loads(payload)
         if type(payload_json) is not dict:
             logger.error(f"Top-level JSON data is not an object, giving up: {payload}")
             return []
