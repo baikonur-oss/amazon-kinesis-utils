@@ -19,6 +19,7 @@ def parse_payload_to_log_dict(
     log_type_key,
     log_type_unknown_prefix,
     log_type_whitelist=None,
+    timestamp_required=False,
 ):
     logger.debug(f"Parsing normalized payload: {payload}")
 
@@ -35,7 +36,10 @@ def parse_payload_to_log_dict(
         if (log_type_whitelist is not None) and (log_type not in log_type_whitelist):
             return
 
-    timestamp, _ = dict_get_default(payload, key=log_timestamp_key, default=None,)
+    timestamp, timestamp_missing = dict_get_default(payload, key=log_timestamp_key, default=None,)
+
+    if timestamp_missing and timestamp_required:
+        target_dict = failed_dict
 
     log_id, _ = dict_get_default(payload, key=log_id_key, default=None,)
 
