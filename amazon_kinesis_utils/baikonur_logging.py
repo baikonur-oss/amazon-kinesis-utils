@@ -19,23 +19,28 @@ def parse_payload_to_log_dict(
     log_type_key,
     log_type_unknown_prefix,
     log_type_whitelist=None,
+    timestamp_required=False,
 ):
     logger.debug(f"Parsing normalized payload: {payload}")
 
-    log_type_unknown = f"{log_type_unknown_prefix}/unknown_type"
+    target_dict = log_dict
 
     log_type, log_type_missing = dict_get_default(
-        payload, key=log_type_key, default=log_type_unknown, verbose=True,
+        payload, key=log_type_key, default=None, verbose=True,
     )
 
     if log_type_missing:
         target_dict = failed_dict
+        log_type = f"{log_type_unknown_prefix}/unknown_type"
     else:
-        target_dict = log_dict
         if (log_type_whitelist is not None) and (log_type not in log_type_whitelist):
             return
 
-    timestamp, _ = dict_get_default(payload, key=log_timestamp_key, default=None,)
+    timestamp, timestamp_missing = dict_get_default(payload, key=log_timestamp_key, default=None,)
+
+    if timestamp_missing and timestamp_required:
+        log_type = f"{log_type_unknown_prefix}/{log_type}/no_timestamp"
+        target_dict = failed_dict
 
     log_id, _ = dict_get_default(payload, key=log_id_key, default=None,)
 
