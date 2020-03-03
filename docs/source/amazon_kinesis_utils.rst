@@ -11,7 +11,7 @@ baikonur\_logging module
 
 Utilities specific to Baikonur Kinesis/Lambda logging modules.
 
-.. automodule:: kinesis_logging_utils.baikonur_logging
+.. automodule:: amazon_kinesis_utils.baikonur_logging
    :members:
    :undoc-members:
    :show-inheritance:
@@ -22,7 +22,7 @@ kinesis module
 Utilities to work with Kinesis Aggregated records, JSON events coming from CloudWatch Logs with
 subscription filters, gzipped JSON data and more.
 
-.. automodule:: kinesis_logging_utils.kinesis
+.. automodule:: amazon_kinesis_utils.kinesis
    :members:
    :undoc-members:
    :show-inheritance:
@@ -32,7 +32,7 @@ misc module
 
 Various utilities useful when working with Kinesis Data Streams.
 
-.. automodule:: kinesis_logging_utils.misc
+.. automodule:: amazon_kinesis_utils.misc
    :members:
    :undoc-members:
    :show-inheritance:
@@ -42,7 +42,7 @@ s3 module
 
 Utilities to save string data to S3 easily.
 
-.. automodule:: kinesis_logging_utils.s3
+.. automodule:: amazon_kinesis_utils.s3
    :members:
    :undoc-members:
    :show-inheritance:
@@ -51,7 +51,7 @@ Utilities to save string data to S3 easily.
 Module contents
 ---------------
 
-.. automodule:: kinesis_logging_utils
+.. automodule:: amazon_kinesis_utils
    :members:
    :undoc-members:
    :show-inheritance:
