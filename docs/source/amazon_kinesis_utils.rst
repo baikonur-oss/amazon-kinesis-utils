@@ -1,4 +1,4 @@
-kinesis\_logging\_utils package
+amazon\_kinesis\_utils package
 ===============================
 
 Submodules
