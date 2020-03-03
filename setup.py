@@ -23,7 +23,7 @@ setup(
     project_urls={
         "Source Code": "https://github.com/baikonur-oss/amazon-kinesis-utils",
     },
-    packages=find_packages(exclude=("test",)),
+    packages=find_packages(exclude=("tests",)),
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",

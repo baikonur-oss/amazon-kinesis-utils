@@ -36,7 +36,9 @@ def parse_payload_to_log_dict(
         if (log_type_whitelist is not None) and (log_type not in log_type_whitelist):
             return
 
-    timestamp, timestamp_missing = dict_get_default(payload, key=log_timestamp_key, default=None,)
+    timestamp, timestamp_missing = dict_get_default(
+        payload, key=log_timestamp_key, default=None,
+    )
 
     if timestamp_missing and timestamp_required:
         log_type = f"{log_type_unknown_prefix}/{log_type}/no_timestamp"
