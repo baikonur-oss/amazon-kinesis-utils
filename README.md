@@ -4,9 +4,15 @@ A library of useful utilities for Amazon Kinesis
 ![](https://img.shields.io/badge/python-3.6+-blue.svg) 
 [![PyPi version](https://img.shields.io/pypi/v/amazon-kinesis-utils.svg)](https://pypi.python.org/pypi/amazon-kinesis-utils/) 
 ![t](https://img.shields.io/badge/status-beta-orange.svg) 
-[![Documentation Status](https://readthedocs.org/projects/amazon-kinesis-utils/badge/?version=latest)](https://amazon-kinesis-utils.readthedocs.io/en/latest/?badge=latest)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/baikonur-oss/amazon-kinesis-utils.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/baikonur-oss/amazon-kinesis-utils/context:python)
+
+[![CircleCI](https://circleci.com/gh/baikonur-oss/amazon-kinesis-utils.svg?style=svg)](https://circleci.com/gh/baikonur-oss/amazon-kinesis-utils)
+[![codecov](https://codecov.io/gh/baikonur-oss/amazon-kinesis-utils/branch/master/graph/badge.svg)](https://codecov.io/gh/baikonur-oss/amazon-kinesis-utils)
+[![Updates](https://pyup.io/repos/github/baikonur-oss/amazon-kinesis-utils/shield.svg)](https://pyup.io/repos/github/baikonur-oss/amazon-kinesis-utils/)
+[![Documentation Status](https://readthedocs.org/projects/amazon-kinesis-utils/badge/?version=latest)](https://amazon-kinesis-utils.readthedocs.io/en/latest/?badge=latest)
+
+
 
 ## Reference
 See: https://amazon-kinesis-utils.readthedocs.io/en/latest/
