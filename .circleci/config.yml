@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  test:
     working_directory: ~/workspace
     docker:
       - image: circleci/python:3.6
@@ -26,10 +26,6 @@ jobs:
             - "/usr/local/lib/python3.6/site-packages"
       - run:
           command: |
-            pipenv run python manage.py test
+            coverage run  --source=./amazon_kinesis_utils -m unittest discover
       - run: codecov
-      - store_test_results:
-          path: test-results
-      - store_artifacts:
-          path: test-results
-          destination: tr1
+      - run: black ./ --check
