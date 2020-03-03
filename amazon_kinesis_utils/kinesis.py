@@ -44,7 +44,7 @@ def normalize_cloudwatch_messages(payload: str) -> List[str]:
     # check if data is JSON and parse
     try:
         payload_json = loads(payload)
-        if type(payload) is not dict:
+        if type(payload_json) is not dict:
             logger.error(f"Top-level JSON data is not an object, giving up: {payload}")
             return []
 
