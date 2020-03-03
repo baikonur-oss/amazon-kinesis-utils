@@ -34,3 +34,7 @@ class MiscTests(unittest.TestCase):
         self.assertEqual(misc.dict_get_default(d, 'a', None), ('exists', False))
         self.assertEqual(misc.dict_get_default(d, 'b', None), (None, True))
         self.assertEqual(misc.dict_get_default(d, 'b', None, verbose=True), (None, True))
+
+
+if __name__ == '__main__':
+    unittest.main()
