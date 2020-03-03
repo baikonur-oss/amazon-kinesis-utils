@@ -4,7 +4,6 @@ from amazon_kinesis_utils import misc
 
 
 class MiscTests(unittest.TestCase):
-
     def test_list_split(self):
         lst = [x for x in range(100)]
 
@@ -27,10 +26,10 @@ class MiscTests(unittest.TestCase):
         self.assertEqual(chunks_len, 100)
 
     def test_dict_default(self):
-        d = {
-            'a': 'exists'
-        }
+        d = {"a": "exists"}
 
-        self.assertEqual(misc.dict_get_default(d, 'a', None), ('exists', False))
-        self.assertEqual(misc.dict_get_default(d, 'b', None), (None, True))
-        self.assertEqual(misc.dict_get_default(d, 'b', None, verbose=True), (None, True))
+        self.assertEqual(misc.dict_get_default(d, "a", None), ("exists", False))
+        self.assertEqual(misc.dict_get_default(d, "b", None), (None, True))
+        self.assertEqual(
+            misc.dict_get_default(d, "b", None, verbose=True), (None, True)
+        )
