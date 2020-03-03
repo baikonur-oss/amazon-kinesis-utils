@@ -20,7 +20,7 @@ def put_str_data(client, bucket: str, key: str, data: str, gzip_compress: bool =
         # gzip and put data to s3 in-memory
         data_p = gzip.compress(data.encode(), compresslevel=9)
     else:
-        data_p = data
+        data_p = data.encode()
 
     with io.BytesIO(data_p) as fileobj:
         s3_results = client.upload_fileobj(fileobj, bucket, key)
