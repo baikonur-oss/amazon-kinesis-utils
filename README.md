@@ -6,7 +6,7 @@ A library of useful utilities for Amazon Kinesis
 ![t](https://img.shields.io/badge/status-beta-orange.svg) 
 [![Documentation Status](https://readthedocs.org/projects/amazon-kinesis-utils/badge/?version=latest)](https://amazon-kinesis-utils.readthedocs.io/en/latest/?badge=latest)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/baikonur-oss/amazon-kinesis-utils.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/baikonur-oss/amazon-kinesis-utils/context:python)
 
 ## Reference
 See: https://amazon-kinesis-utils.readthedocs.io/en/latest/
