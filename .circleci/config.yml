@@ -29,3 +29,4 @@ jobs:
             coverage run  --source=./amazon_kinesis_utils -m unittest discover
       - run: codecov
       - run: black ./ --check
+
