@@ -1,6 +1,7 @@
 import gzip
 import io
 import logging
+import urllib.parse
 
 logger = logging.getLogger("kinesis_logging_utils")
 logger.setLevel(logging.INFO)
@@ -21,6 +22,8 @@ def put_str_data(client, bucket: str, key: str, data: str, gzip_compress: bool =
         data_p = gzip.compress(data.encode(), compresslevel=9)
     else:
         data_p = data.encode()
+
+    clean_key = urllib.parse.quote(key)
 
     with io.BytesIO(data_p) as fileobj:
         s3_results = client.upload_fileobj(fileobj, bucket, key)
