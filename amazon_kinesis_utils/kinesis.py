@@ -101,25 +101,35 @@ def extract_data_from_json_cwl_message(message: dict) -> List[str]:
 
 def create_records(data: List[str]) -> List[dict]:
     """
-    Create Kinesis Records for use with PutRecords API
+    Create Kinesis Records from multiple str data for use with PutRecords API
 
     :param data: List of strings to convert to records
     :return: List of Kinesis Records for PutRecords API
+    """
+    records = []
+    for d in data:
+        records.append(create_record(d))
+
+    logger.debug(f"Formed Kinesis Records batch for PutRecords API: {records}")
+    return records
+
+
+def create_record(data: str) -> dict:
+    """
+    Create a single Kinesis Record for use with PutRecords API
+
+    :param data: A string to convert to record
+    :return: Kinesis Record for PutRecords API
     """
     random_alphanumerical = (
         string.ascii_lowercase + string.ascii_uppercase + string.digits
     )
 
-    records = []
-    d: str
-    for d in data:
-        data_blob = d.encode("utf-8")
-        partition_key: str = "".join(
+    data_blob = data.encode("utf-8")
+    partition_key: str = "".join(
             random.choices(random_alphanumerical, k=20)
-        )  # max 256 chars
-        records.append({"Data": data_blob, "PartitionKey": partition_key})
-    logger.debug(f"Formed Kinesis Records batch for PutRecords API: {records}")
-    return records
+    )  # max 256 chars
+    return {"Data": data_blob, "PartitionKey": partition_key}
 
 
 def put_records_batch(
