@@ -127,7 +127,7 @@ def create_record(data: str) -> dict:
 
     data_blob = data.encode("utf-8")
     partition_key: str = "".join(
-            random.choices(random_alphanumerical, k=20)
+        random.choices(random_alphanumerical, k=20)
     )  # max 256 chars
     return {"Data": data_blob, "PartitionKey": partition_key}
 
