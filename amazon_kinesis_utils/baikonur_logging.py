@@ -22,6 +22,12 @@ def parse_payload_to_log_dict(
     timestamp_required=False,
 ):
     logger.debug(f"Parsing normalized payload: {payload}")
+    logger.debug(type(payload))
+
+    # ensure Common Schema requirement: root type must be object
+    if type(payload) != dict:
+        logger.info(f"Expected dict payload but got {type(payload)} instead, skipping")
+        return
 
     target_dict = log_dict
 
