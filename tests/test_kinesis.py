@@ -6,19 +6,17 @@ from typing import List, Dict
 from amazon_kinesis_utils import kinesis
 
 
-def generate_sample_kinesis_records(data: list) -> List[Dict]:
+def generate_sample_kinesis_records(data: list, encode=True) -> List[Dict]:
     ret = []
 
     for d in data:
-        data_blob = d.encode()
-        data_base64 = base64.b64encode(data_blob)
         ret.append(
             {
                 "kinesis": {
                     "kinesisSchemaVersion": "1.0",
                     "partitionKey": "0",
                     "sequenceNumber": "00000000000000000000000000000000000000000000000",
-                    "data": data_base64,
+                    "data": base64.b64encode(d.encode()) if encode else d,
                     "approximateArrivalTimestamp": 1592558220.000,
                 },
                 "eventSource": "aws:kinesis",
@@ -114,6 +112,27 @@ class KinesisTests(unittest.TestCase):
         data = ["true", "1", "null"]
 
         event = {"Records": generate_sample_kinesis_records(data)}
+
+        records = [x for x in kinesis.parse_records(event["Records"])]
+
+        self.assertEqual(len(records), 0)
+
+    def test_parse_records_gzipped_json_cwl(self):
+        # raw sample data from CloudWatch Logs Subscription Filters
+        # containing only a health check message:
+        # "CWL CONTROL MESSAGE: Checking health of destination Kinesis stream."
+
+        data = [
+            "H4sIAAAAAAAAADWOwQqCQBRFf2WYdURGFrkLsRZZQgYtQmLSlz7SGZk3JhH+e6PW8nAv954Pr4BI5HB+18A97kfH8ykKb4cgjje7gE"
+            "+4aiXoPilVk7XCpEWocrJBqfKdVk1ts5Fio0FUI1Jzp1RjbVDJLZYGNHHvmgy94AXS9PjhmI11g1bDiMqOOe567i4XznK2ctzJX68X"
+            "uITsp8d+eh7zC0ifKHNWgChNwdSDZXYJpeif2R4lEBKjQW3Ku6T7ApsNvwTyAAAA"
+        ]
+
+        event = {"Records": generate_sample_kinesis_records(data, encode=False)}
+
+        import logging
+
+        logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
         records = [x for x in kinesis.parse_records(event["Records"])]
 
