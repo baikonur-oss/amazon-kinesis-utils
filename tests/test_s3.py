@@ -1,5 +1,4 @@
 import gzip
-import io
 import unittest
 
 from amazon_kinesis_utils import s3
