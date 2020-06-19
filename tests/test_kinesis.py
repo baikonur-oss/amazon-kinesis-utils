@@ -1,10 +1,12 @@
 import base64
+import json
 import unittest
+from typing import List, Dict
 
 from amazon_kinesis_utils import kinesis
 
 
-def generate_sample_kinesis_records(data: list) -> list:
+def generate_sample_kinesis_records(data: list) -> List[Dict]:
     ret = []
 
     for d in data:
@@ -82,3 +84,37 @@ class KinesisTests(unittest.TestCase):
         self.assertEqual(len(records), len(data))
         for i, r in enumerate(records):
             self.assertEqual(r, data[i])
+
+    def test_parse_records_json_empty(self):
+        data = ["{}"]
+
+        event = {"Records": generate_sample_kinesis_records(data)}
+
+        records = [x for x in kinesis.parse_records(event["Records"])]
+
+        self.assertEqual(len(records), len(data))
+        for i, r in enumerate(records):
+            self.assertEqual(r, data[i])
+
+    def test_parse_records_json_multi(self):
+        json_data = [{"a": 1}, {"b": 2}, {"c": 3}]
+
+        data = [json.dumps(x) for x in json_data]
+
+        event = {"Records": generate_sample_kinesis_records(data)}
+
+        records = [x for x in kinesis.parse_records(event["Records"])]
+
+        self.assertEqual(len(records), len(data))
+        for i, r in enumerate(records):
+            self.assertEqual(r, data[i])
+
+    def test_parse_records_json_root_non_object(self):
+        # non-object types on root should be ignored
+        data = ["true", "1", "null"]
+
+        event = {"Records": generate_sample_kinesis_records(data)}
+
+        records = [x for x in kinesis.parse_records(event["Records"])]
+
+        self.assertEqual(len(records), 0)
