@@ -39,7 +39,7 @@ Make sure to have following tools installed:
 - Sphinx for docs generation
 
 ### macOS
-```console
+```shell
 $ brew install pre-commit
 
 # set up pre-commit hooks by running below command in repository root
