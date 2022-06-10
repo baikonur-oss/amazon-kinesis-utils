@@ -1,2 +1,2 @@
-aws-kinesis-agg==1.1.2
+aws-kinesis-agg==1.2.2
 python-dateutil==2.8.1
