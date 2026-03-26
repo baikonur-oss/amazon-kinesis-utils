@@ -1,0 +1,17 @@
+# Read the Docs configuration file
+version: 2
+
+# Set the OS and Python version (matching old working build)
+build:
+  os: ubuntu-22.04
+  tools:
+    python: "3.7"
+
+# Build documentation with Sphinx
+sphinx:
+  configuration: docs/source/conf.py
+
+# Python requirements
+python:
+  install:
+    - requirements: requirements.txt
