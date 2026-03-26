@@ -19,8 +19,8 @@ sys.path.insert(0, os.path.abspath("../.."))
 # -- Project information -----------------------------------------------------
 
 project = "amazon-kinesis-utils"
-copyright = "2020, CyberAgent, Inc."
-author = "CyberAgent, Inc."
+copyright = "2019-2026, CyberAgent, Inc. & The Baikonur OSS Project."
+author = "CyberAgent, Inc. & The Baikonur OSS Project."
 
 
 # -- General configuration ---------------------------------------------------
