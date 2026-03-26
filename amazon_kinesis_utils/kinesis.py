@@ -27,7 +27,7 @@ class KinesisException(Exception):
 def normalize_cloudwatch_messages(payload: str) -> List[str]:
     """
     Normalize messages from CloudWatch Logs subscription filters and pass through other data
-    
+
     :param payload: A string containing JSON data (decoded payload inside Kinesis records)
     :return: List of normalized raw data
              (CloudWatch Logs subscription filters may send multiple log events in one payload)
@@ -65,7 +65,7 @@ def normalize_cloudwatch_messages(payload: str) -> List[str]:
 def extract_data_from_json_cwl_message(message: dict) -> List[str]:
     """
     Extract log events from CloudWatch Logs subscription filters JSON messages (parsed to dict).
-    For details, see: https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/SubscriptionFilters.html 
+    For details, see: https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/SubscriptionFilters.html
 
     :param message: Dictionary representing CloudWatch Logs subscription filters JSON messages
     :return: List of raw log event messages
@@ -156,7 +156,8 @@ def put_records_batch(
 
         while len(records_to_send) > 0:
             kinesis_response = client.put_records(
-                Records=records_to_send, StreamName=stream_name,
+                Records=records_to_send,
+                StreamName=stream_name,
             )
 
             if kinesis_response["FailedRecordCount"] == 0:

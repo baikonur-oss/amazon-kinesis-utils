@@ -32,7 +32,10 @@ def parse_payload_to_log_dict(
     target_dict = log_dict
 
     log_type, log_type_missing = dict_get_default(
-        payload, key=log_type_key, default=None, verbose=True,
+        payload,
+        key=log_type_key,
+        default=None,
+        verbose=True,
     )
 
     if log_type_missing:
@@ -43,14 +46,20 @@ def parse_payload_to_log_dict(
             return
 
     timestamp, timestamp_missing = dict_get_default(
-        payload, key=log_timestamp_key, default=None,
+        payload,
+        key=log_timestamp_key,
+        default=None,
     )
 
     if timestamp_missing and timestamp_required:
         log_type = f"{log_type_unknown_prefix}/{log_type}/no_timestamp"
         target_dict = failed_dict
 
-    log_id, _ = dict_get_default(payload, key=log_id_key, default=None,)
+    log_id, _ = dict_get_default(
+        payload,
+        key=log_id_key,
+        default=None,
+    )
 
     # valid data
     append_to_log_dict(

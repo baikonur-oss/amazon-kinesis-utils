@@ -24,7 +24,10 @@ class MiscTests(unittest.TestCase):
         s3_client = MockedS3Client()
 
         s3.put_str_data(
-            s3_client, self.bucket, self.key, self.data,
+            s3_client,
+            self.bucket,
+            self.key,
+            self.data,
         )
 
         uploaded_data = s3_client.get_uploaded_data()
@@ -36,7 +39,11 @@ class MiscTests(unittest.TestCase):
         s3_client = MockedS3Client()
 
         s3.put_str_data(
-            s3_client, self.bucket, self.key, self.data, gzip_compress=True,
+            s3_client,
+            self.bucket,
+            self.key,
+            self.data,
+            gzip_compress=True,
         )
 
         uploaded_data = s3_client.get_uploaded_data()
